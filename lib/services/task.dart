@@ -10,6 +10,15 @@ class TaskServices {
   }
 
   ///Get All Task
+  Stream<List<TaskModel>> getAllTask() {
+    return FirebaseFirestore.instance
+        .collection('taskCollection')
+        .snapshots()
+        .map((taskList) => taskList.docs
+            .map((taskModel) => TaskModel.fromJson(taskModel.data()))
+            .toList());
+  }
+
   ///Update Task
   Future updateTask(TaskModel model) async {
     return await FirebaseFirestore.instance
@@ -27,7 +36,27 @@ class TaskServices {
   }
 
   ///Get Completed Task
+  Stream<List<TaskModel>> getCompletedTask() {
+    return FirebaseFirestore.instance
+        .collection('taskCollection')
+        .where('isCompleted', isEqualTo: true)
+        .snapshots()
+        .map((taskList) => taskList.docs
+            .map((taskModel) => TaskModel.fromJson(taskModel.data()))
+            .toList());
+  }
+
   ///Get InCompleted Task
+  Stream<List<TaskModel>> getInCompletedTask() {
+    return FirebaseFirestore.instance
+        .collection('taskCollection')
+        .where('isCompleted', isEqualTo: false)
+        .snapshots()
+        .map((taskList) => taskList.docs
+            .map((taskModel) => TaskModel.fromJson(taskModel.data()))
+            .toList());
+  }
+
   ///Mark Task as Complete
   Future markTaskAsComplete(String taskID) async {
     return await FirebaseFirestore.instance
